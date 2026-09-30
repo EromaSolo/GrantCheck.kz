@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrantCheck.kz — Мой список приоритетов</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+  <header class="bg-indigo-800 text-white py-5 px-4">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="text-2xl font-extrabold">GrantCheck<span class="text-indigo-300">.kz</span></a>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full">
+    <h1 class="text-3xl font-extrabold mb-2">Мой список специальностей (Shortlist)</h1>
+    <p class="text-slate-600 mb-6">Расставьте специальности по приоритету (до 4 направлений при подаче на грант).</p>
+
+    <div id="shortlist-container" class="space-y-4"></div>
+
+    <div class="mt-8 space-y-3">
+      <a href="plan.html" id="plan-btn" class="block text-center btn-primary w-full text-xl font-bold rounded-xl py-4">
+        Перейти к плану подачи документов →
+      </a>
+      <a href="index.html" class="block text-center border-2 border-indigo-700 text-indigo-800 font-bold rounded-xl py-3">
+        + Добавить еще одну специальность
+      </a>
+    </div>
+  </main>
+
+  <script type="module">
+    import { fetchMajors, getShortlistFromStorage, saveShortlistToStorage } from './js/api.js';
+    import './js/app.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const majors = await fetchMajors();
+      const container = document.getElementById('shortlist-container');
+
+      function render() {
+        const list = getShortlistFromStorage();
+        container.innerHTML = '';
+
+        if (list.length === 0) {
+          container.innerHTML = `<div class="bg-white p-6 rounded-2xl border text-center text-slate-500">Ваш список пуст. Перейдите на главную и рассчитайте шансы.</div>`;
+          document.getElementById('plan-btn').classList.add('hidden');
+          return;
+        }
+
+        list.forEach((key, index) => {
+          const item = majors[key];
+          if (!item) return;
+
+          container.innerHTML += `
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <span class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-800 font-extrabold grid place-items-center">${index + 1}</span>
+                <div>
+                  <h3 class="font-extrabold text-lg">${item.name}</h3>
+                  <p class="text-xs text-slate-500">${item.uni}</p>
+                </div>
+              </div>
+              <button data-key="${key}" class="remove-btn text-red-600 font-bold text-sm hover:underline">Удалить</button>
+            </div>
+          `;
+        });
+
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const keyToRemove = e.target.getAttribute('data-key');
+            const updated = getShortlistFromStorage().filter(k => k !== keyToRemove);
+            saveShortlistToStorage(updated);
+            render();
+          });
+        });
+      }
+
+      render();
+    });
+  </script>
+</body>
+</html>

@@ -1,417 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GrantCheck.kz — Check your grant chances</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>
-  body { font-family: 'Manrope', system-ui, sans-serif; }
-  .btn-primary { background:#4338ca; color:#fff; }
-  .btn-primary:hover { background:#3730a3; }
-  .btn-primary:focus-visible, select:focus-visible, input:focus-visible { outline:3px solid #a5b4fc; outline-offset:2px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spinner { animation: spin .9s linear infinite; }
-  @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrantCheck.kz — Оценка шансов на грант ЕНТ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
 
-<header class="bg-indigo-800 text-white">
-  <div class="max-w-3xl mx-auto px-5 py-5 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-lg bg-white text-indigo-800 font-extrabold text-xl grid place-items-center">G</div>
-    <button id="logo" type="button" class="text-2xl font-extrabold tracking-tight text-white">GrantCheck<span class="text-indigo-300">.kz</span></button>
-  </div>
-  <div class="flex gap-2 pr-5">
-    <button id="navArch" type="button" class="text-sm font-bold text-white border-2 border-indigo-300 rounded-lg px-3 py-2">How it works</button>
-    <button id="navList" type="button" class="text-sm font-bold bg-white text-indigo-800 rounded-lg px-3 py-2">My shortlist (<span id="cnt">0</span>)</button>
-  </div>
-  <div class="hidden"></div>
-  </div>
-</header>
-
-<main class="max-w-3xl mx-auto px-5 py-8">
-
-<!-- SCREEN 0: HOME (PROBLEM + EVIDENCE) -->
-<section id="screen-home">
-  <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight">High UNT scores don't always get a grant. Check yours before you choose.</h1>
-  <p class="mt-4 text-lg text-slate-700">11th-grade students and applicants find it hard to get state grants for popular majors because grants are spread unevenly across programs. High-scoring applicants get rejected and some choose the wrong career.</p>
-
-  <div class="mt-8 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8">
-    <h2 class="text-xl font-extrabold">Evidence 1: grants allocated nationwide</h2>
-    <div class="mt-4 space-y-3">
-      <div><div class="flex justify-between font-bold"><span>Veterinary Medicine</span><span>973</span></div><div class="h-4 bg-slate-100 rounded-full"><div class="h-4 bg-slate-400 rounded-full" style="width:100%"></div></div></div>
-      <div><div class="flex justify-between font-bold"><span>Physical Education Teachers</span><span>500</span></div><div class="h-4 bg-slate-100 rounded-full"><div class="h-4 bg-slate-400 rounded-full" style="width:51%"></div></div></div>
-      <div><div class="flex justify-between font-bold"><span>Law</span><span>200</span></div><div class="h-4 bg-slate-100 rounded-full"><div class="h-4 bg-red-700 rounded-full" style="width:21%"></div></div></div>
-    </div>
-    <p class="mt-3 text-sm text-slate-600">Source: official grant distribution tables, <a class="text-indigo-800 underline" target="_blank" rel="noopener" href="https://testcenter.kz/?page_id=45050&lang=ru">National Testing Center (testcenter.kz)</a>.</p>
-  </div>
-
-  <div class="mt-4 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8">
-    <h2 class="text-xl font-extrabold">Evidence 2: 117 points was not enough for Law</h2>
-    <p class="mt-2 text-lg">News reports describe applicants with 117 points who missed out on a grant, while others received one with 60–70 points in less competitive fields. The last Law grant went to a student with <b>126 of 140</b>.</p>
-    <p class="mt-3 text-sm text-slate-600">Source: <a class="text-indigo-800 underline" target="_blank" rel="noopener" href="https://otyrar.kz/2026/08/posle-8-kazahstanskie-roditeli-okazalis-nedovolny-raspredeleniem-obrazovatelnyh-grantov/">Otyrar news article</a>.</p>
-  </div>
-
-  <button id="goForm" type="button" class="btn-primary mt-8 w-full text-xl font-bold rounded-xl py-4 transition-colors">Calculate My Chances <span class="font-medium text-indigo-200">(Рассчитать шансы)</span></button>
-</section>
-
-<!-- SCREEN 1: FORM -->
-<section id="screen-form" class="hidden">
-  <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight">Will your UNT score get you a state grant?</h1>
-  <p class="mt-3 text-lg text-slate-600">Enter your results and we'll compare them with past Ministry cutoffs and grant quotas.</p>
-
-  <form id="form" class="mt-8 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6" novalidate>
-    <div>
-      <label for="major" class="block text-lg font-bold mb-2">Preferred major <span class="font-medium text-slate-500">(Специальность)</span></label>
-      <select id="major" class="w-full text-lg border-2 border-slate-300 rounded-xl px-4 py-3 bg-white"></select>
-    </div>
-
-    <div class="grid sm:grid-cols-2 gap-6">
-      <div>
-        <label for="sub1" class="block text-lg font-bold mb-2">Profile subject 1</label>
-        <select id="sub1" class="w-full text-lg border-2 border-slate-300 rounded-xl px-4 py-3 bg-white"></select>
-      </div>
-      <div>
-        <label for="sub2" class="block text-lg font-bold mb-2">Profile subject 2</label>
-        <select id="sub2" class="w-full text-lg border-2 border-slate-300 rounded-xl px-4 py-3 bg-white"></select>
-      </div>
-    </div>
-    <p id="subHint" class="-mt-3 text-sm text-slate-500"></p>
-    <p id="subErr" class="hidden -mt-3 text-base font-bold text-red-700" role="alert"></p>
-
-    <div>
-      <label for="score" class="block text-lg font-bold mb-2">Total UNT score <span class="font-medium text-slate-500">(Балл ЕНТ, 0–140)</span></label>
-      <input id="score" type="number" inputmode="numeric" min="0" max="140" value="117" placeholder="e.g. 117"
-             class="w-full text-2xl font-bold border-2 border-slate-300 rounded-xl px-4 py-3">
-      <p id="scoreErr" class="hidden mt-2 text-base font-bold text-red-700" role="alert"></p>
-    </div>
-
-    <button type="submit" class="btn-primary w-full text-xl font-bold rounded-xl py-4 transition-colors">
-      Calculate My Chances <span class="font-medium text-indigo-200">(Рассчитать шансы)</span>
-    </button>
-  </form>
-  <p class="mt-4 text-sm text-slate-500">Prototype for a class project. Cutoff data shown here is sample data, not official Ministry figures.</p>
-</section>
-
-<!-- SCREEN 2: LOADING -->
-<section id="screen-loading" class="hidden text-center py-20" aria-live="polite">
-  <div class="spinner mx-auto w-16 h-16 rounded-full border-8 border-indigo-100 border-t-indigo-700"></div>
-  <h2 class="mt-8 text-2xl font-extrabold">Calculating your chances…</h2>
-  <p id="loadMsg" class="mt-3 text-lg text-slate-600 max-w-md mx-auto">Comparing scores with historical Ministry cutoff data and grant quotas...</p>
-  <div class="mt-8 mx-auto max-w-xs h-2 bg-slate-200 rounded-full overflow-hidden"><div id="bar" class="h-full bg-indigo-700 rounded-full" style="width:0%;transition:width .4s"></div></div>
-</section>
-
-<!-- SCREEN 3: RESULTS -->
-<section id="screen-results" class="hidden">
-  <button id="backTop" type="button" class="text-indigo-800 font-bold text-lg underline underline-offset-4 mb-4">← Edit scores / Back</button>
-
-  <div id="mainCard" class="rounded-2xl border-2 p-6 sm:p-8"></div>
-
-  <div class="mt-6 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8">
-    <h2 class="text-2xl font-extrabold">Cutoff history for <span id="hMajor"></span></h2>
-    <p class="text-slate-600 mt-1">Lowest UNT score that received a grant, by year.</p>
-    <div id="history" class="mt-5 grid grid-cols-4 gap-3 text-center"></div>
-
-    <div class="mt-8">
-      <p class="font-bold mb-3">Where your score sits</p>
-      <div class="relative h-4 rounded-full bg-slate-200 mx-2">
-        <div id="zone" class="absolute inset-y-0 rounded-full bg-indigo-200"></div>
-        <div id="you" class="absolute -top-2 w-1.5 h-8 bg-indigo-800 rounded"></div>
-        <div id="youLbl" class="absolute top-8 -translate-x-1/2 text-sm font-bold text-indigo-800 whitespace-nowrap"></div>
-      </div>
-      <div class="flex justify-between text-xs text-slate-500 mx-2 mt-10"><span>70</span><span>105</span><span>140</span></div>
-      <p class="text-sm text-slate-500 mt-2">The shaded band shows the range of recent cutoffs.</p>
-    </div>
-  </div>
-
-  <div class="mt-6">
-    <h2 class="text-2xl font-extrabold">Safer alternatives at <span id="altScore"></span> points</h2>
-    <p class="text-slate-600 mt-1">Related programs where your score gives a high grant chance.</p>
-    <div id="alts" class="mt-4 grid gap-4 sm:grid-cols-3"></div>
-  </div>
-
-  <button id="toAlert" type="button" class="mt-8 w-full text-xl font-bold rounded-xl py-4 border-2 border-indigo-700 text-indigo-800 hover:bg-indigo-50">Get email alerts for these programs</button>
-  <button id="backBottom" type="button" class="btn-primary mt-4 w-full text-xl font-bold rounded-xl py-4 transition-colors">Edit Scores / Back</button>
-</section>
-
-<!-- SCREEN 4: PROGRAM DETAILS -->
-<section id="screen-detail" class="hidden">
-  <button id="dBack" type="button" class="text-indigo-800 font-bold text-lg underline underline-offset-4 mb-4">← Back to results</button>
-  <div id="dBody" class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8"></div>
-  <button id="dAdd" type="button" class="btn-primary mt-6 w-full text-xl font-bold rounded-xl py-4 transition-colors">Add to shortlist</button>
-</section>
-
-<!-- SCREEN 5: SHORTLIST -->
-<section id="screen-list" class="hidden">
-  <button id="lBack" type="button" class="text-indigo-800 font-bold text-lg underline underline-offset-4 mb-4">← Back to results</button>
-  <h2 class="text-3xl font-extrabold">My shortlist</h2>
-  <p class="text-slate-600 mt-1">Programs in order of priority. Put your riskiest choice first and keep a safe option on the list.</p>
-  <p id="lNote" class="hidden mt-4 rounded-xl bg-indigo-50 border border-indigo-200 px-4 py-3 font-bold text-indigo-900" role="status"></p>
-  <div id="lBody" class="mt-5 space-y-4"></div>
-  <button id="lNext" type="button" class="btn-primary mt-8 w-full text-xl font-bold rounded-xl py-4 transition-colors">Continue to application plan</button>
-</section>
-
-<!-- SCREEN 6: APPLICATION PLAN -->
-<section id="screen-plan" class="hidden">
-  <button id="pBack" type="button" class="text-indigo-800 font-bold text-lg underline underline-offset-4 mb-4">← Back to shortlist</button>
-  <h2 class="text-3xl font-extrabold">Your application plan</h2>
-  <p id="pSub" class="text-slate-600 mt-1"></p>
-  <div class="mt-5 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8">
-    <div class="flex items-center justify-between font-bold"><span id="pCount"></span><span class="text-sm text-slate-500">Sample dates</span></div>
-    <div class="mt-2 h-3 bg-slate-200 rounded-full overflow-hidden"><div id="pBar" class="h-full bg-indigo-700 rounded-full" style="width:0%;transition:width .3s"></div></div>
-    <ul id="pList" class="mt-6 space-y-4"></ul>
-  </div>
-  <button id="pStart" type="button" class="mt-6 w-full text-xl font-bold rounded-xl py-4 border-2 border-indigo-700 text-indigo-800 hover:bg-indigo-50">Start over with new scores</button>
-</section>
-<!-- SCREEN 7: EMAIL ALERTS -->
-<section id="screen-alert" class="hidden">
-  <button id="aBack" type="button" class="text-indigo-800 font-bold text-lg underline underline-offset-4 mb-4">← Back to results</button>
-  <h2 class="text-3xl font-extrabold">Get grant updates by email</h2>
-  <p class="text-slate-600 mt-1">We store your profile and email you when cutoff scores or Ministry quotas change.</p>
-  <div class="mt-6 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-5">
-    <div>
-      <label for="email" class="block text-lg font-bold mb-2">Email address</label>
-      <input id="email" type="email" placeholder="name@example.com" class="w-full text-lg border-2 border-slate-300 rounded-xl px-4 py-3">
-      <p id="emailErr" class="hidden mt-2 font-bold text-red-700" role="alert">Enter a valid email address, for example name@example.com.</p>
-    </div>
-    <label class="flex gap-3 items-start text-lg"><input type="checkbox" checked class="mt-1 w-6 h-6 accent-indigo-700">Cutoff scores are updated after a UNT round</label>
-    <label class="flex gap-3 items-start text-lg"><input type="checkbox" checked class="mt-1 w-6 h-6 accent-indigo-700">Grant quotas change for my majors</label>
-    <button id="aSave" type="button" class="btn-primary w-full text-xl font-bold rounded-xl py-4 transition-colors">Save alerts</button>
-    <p id="aOk" class="hidden rounded-xl bg-green-50 border-2 border-green-600 px-4 py-3 font-bold text-green-900" role="status"></p>
-    <p class="text-sm text-slate-500">Prototype: no email is actually sent.</p>
-  </div>
-</section>
-
-<!-- SCREEN 8: HOW IT WORKS (IPO-SC ARCHITECTURE) -->
-<section id="screen-arch" class="hidden">
-  <button id="archBack" type="button" class="text-indigo-800 font-bold text-lg underline underline-offset-4 mb-4">← Back</button>
-  <h2 class="text-3xl font-extrabold">How GrantCheck.kz works</h2>
-  <p class="text-slate-600 mt-1">Information flow from your phone or laptop to the server and back.</p>
-  <div class="mt-6 space-y-2 text-center">
-    <div class="rounded-2xl border-2 border-indigo-700 bg-white p-4"><b>Applicant</b> (smartphone or laptop)<br><span class="text-slate-600">Input: UNT score, profile subjects, preferred major. Output: chance in %, alternatives. Interface built with React.</span></div>
-    <div class="font-bold text-indigo-800">↕ HTTPS + REST API</div>
-    <div class="rounded-2xl border-2 border-indigo-700 bg-white p-4"><b>Web server</b> (Node.js or Python, in the cloud)<br><span class="text-slate-600">Processing: compares your score with past cutoffs and quotas, calculates the chance, sorts programs.</span></div>
-    <div class="font-bold text-indigo-800">↕ SQL queries</div>
-    <div class="rounded-2xl border-2 border-indigo-700 bg-white p-4"><b>PostgreSQL database</b><br><span class="text-slate-600">Storage: user profiles, cutoff scores by year and major, Ministry quotas.</span></div>
-    <div class="grid sm:grid-cols-2 gap-2 pt-2">
-      <div class="rounded-2xl border border-slate-300 bg-white p-4"><b>Data admin</b><br><span class="text-slate-600">Updates cutoffs and quotas after each UNT round</span></div>
-      <div class="rounded-2xl border border-slate-300 bg-white p-4"><b>Email service</b><br><span class="text-slate-600">Sends alerts to applicants when data changes</span></div>
-    </div>
-  </div>
-  <button id="archGo" type="button" class="btn-primary mt-8 w-full text-xl font-bold rounded-xl py-4 transition-colors">Calculate My Chances</button>
-</section>
-</main>
-
-<script>
-// Sample data. cutoffs = last four years; c = score where chance is 50%; s = how spread out the cutoffs are.
-const SUBJECTS = ["World History","Human. Society. Rights","Geography","Foreign Language","Mathematics","Physics","Chemistry","Biology","Kazakh/Russian Literature","Informatics"];
-const MAJORS = {
-  law:   {name:"Law (Право)", uni:"Al-Farabi KazNU, Eurasian National University", subs:["World History","Human. Society. Rights"], cutoffs:[121,124,127,126], c:118, s:6},
-  intl:  {name:"International Law", uni:"Kazakh Humanitarian Law University", subs:["World History","Human. Society. Rights"], cutoffs:[100,102,105,104], c:104, s:5, related:["law"]},
-  soc:   {name:"Sociology", uni:"Al-Farabi KazNU", subs:["World History","Human. Society. Rights"], cutoffs:[92,95,96,98], c:98, s:5, related:["law"]},
-  pol:   {name:"Political Science", uni:"L.N. Gumilyov ENU", subs:["World History","Human. Society. Rights"], cutoffs:[101,104,107,106], c:106, s:4, related:["law"]},
-  cust:  {name:"Customs & Legal Regulation", uni:"Regional state university", subs:["World History","Human. Society. Rights"], cutoffs:[90,93,94,96], c:96, s:5, related:["law"]},
-  med:   {name:"General Medicine", uni:"Astana Medical University", subs:["Biology","Chemistry"], cutoffs:[124,127,129,128], c:126, s:4},
-  cs:    {name:"Information Systems", uni:"Nazarbayev-partner & state universities", subs:["Mathematics","Informatics"], cutoffs:[108,111,113,112], c:112, s:5},
-  jour:  {name:"Journalism", uni:"Al-Farabi KazNU", subs:["World History","Foreign Language"], cutoffs:[104,107,109,108], c:108, s:5}
-};
-const $ = id => document.getElementById(id);
-const prob = (score, m) => Math.round(100 / (1 + Math.exp(-(score - m.c) / m.s)));
-const level = p => p >= 75 ? {k:"High",  card:"bg-green-50 border-green-600",  badge:"bg-green-700 text-white"}
-                 : p >= 40 ? {k:"Medium",card:"bg-yellow-50 border-yellow-500",badge:"bg-yellow-400 text-slate-900"}
-                           : {k:"Low",   card:"bg-red-50 border-red-600",      badge:"bg-red-700 text-white"};
-
-// Build dropdowns
-$("major").innerHTML = Object.entries(MAJORS).map(([k,m]) => `<option value="${k}">${m.name}</option>`).join("");
-[$("sub1"),$("sub2")].forEach(s => s.innerHTML = SUBJECTS.map(x => `<option>${x}</option>`).join(""));
-function syncSubjects(){
-  const m = MAJORS[$("major").value];
-  $("sub1").value = m.subs[0]; $("sub2").value = m.subs[1];
-  $("subHint").textContent = "Suggested for this major: " + m.subs.join(" + ") + ". You can change them.";
-  $("subErr").classList.add("hidden");
-}
-$("major").addEventListener("change", syncSubjects);
-syncSubjects();
-
-function show(id){
-  ["screen-home","screen-form","screen-loading","screen-results","screen-detail","screen-list","screen-plan","screen-alert","screen-arch"].forEach(s => $(s).classList.toggle("hidden", s !== id));
-  window.scrollTo({top:0});
-}
-
-// Validation
-function validate(){
-  let ok = true;
-  const v = $("score").value.trim(), n = Number(v);
-  const bad = v === "" || !Number.isInteger(n) || n < 0 || n > 140;
-  $("scoreErr").textContent = bad ? "Enter a whole number from 0 to 140." : "";
-  $("scoreErr").classList.toggle("hidden", !bad);
-  $("score").classList.toggle("border-red-600", bad);
-  if (bad) ok = false;
-  const same = $("sub1").value === $("sub2").value;
-  $("subErr").textContent = same ? "Choose two different profile subjects." : "";
-  $("subErr").classList.toggle("hidden", !same);
-  if (same) ok = false;
-  return ok;
-}
-
-// Submit -> loading -> results
-const msgs = ["Comparing scores with historical Ministry cutoff data and grant quotas...","Checking grant quotas for this major...","Finding safer related programs..."];
-$("form").addEventListener("submit", e => {
-  e.preventDefault();
-  if (!validate()) return;
-  show("screen-loading");
-  let i = 0; $("bar").style.width = "10%"; $("loadMsg").textContent = msgs[0];
-  const t = setInterval(() => { i++; $("loadMsg").textContent = msgs[Math.min(i, msgs.length-1)]; $("bar").style.width = Math.min(30 + i*30, 95) + "%"; }, 900);
-  setTimeout(() => { clearInterval(t); $("bar").style.width = "100%"; render(); show("screen-results"); }, 2800);
-});
-
-function render(){
-  const key = $("major").value, m = MAJORS[key], score = Number($("score").value);
-  const p = prob(score, m), L = level(p), last = m.cutoffs[3];
-  const gap = last - score;
-
-  $("mainCard").className = `rounded-2xl border-2 p-6 sm:p-8 ${L.card}`;
-  $("mainCard").innerHTML = `
-    <p class="text-lg font-bold">${m.name} · ${score} points</p>
-    <div class="mt-3 flex flex-wrap items-center gap-4">
-      <span class="text-6xl font-extrabold">${p}%</span>
-      <span class="rounded-full px-4 py-2 text-lg font-bold ${L.badge}">${L.k} risk</span>
-    </div>
-    <p class="mt-4 text-lg">${L.k} risk: ${p}% chance of a grant.
-      ${gap > 0 ? `You are <b>${gap} points below</b> last year's cutoff of ${last}.` : `You are <b>${-gap} points above</b> last year's cutoff of ${last}.`}
-      ${p < 75 ? "Consider the safer options below as a backup." : "This looks like a safe choice."}</p>
-    <button type="button" data-detail="${key}" class="mt-5 rounded-xl border-2 border-indigo-700 text-indigo-800 bg-white font-bold text-lg px-5 py-3 hover:bg-indigo-50">View ${m.name.split(" (")[0]} details</button>`;
-  cur.score = score; hasResults = true;
-
-  $("hMajor").textContent = m.name;
-  const years = [2022,2023,2024,2025];
-  $("history").innerHTML = m.cutoffs.map((c,i) => `
-    <div class="rounded-xl border ${i===3?"border-indigo-600 bg-indigo-50":"border-slate-200"} p-3">
-      <div class="text-3xl font-extrabold">${c}</div><div class="text-sm text-slate-600">${years[i]}${i===3?" (last)":""}</div></div>`).join("");
-
-  const pos = v => ((Math.max(70, Math.min(140, v)) - 70) / 70 * 100);
-  const lo = Math.min(...m.cutoffs), hi = Math.max(...m.cutoffs);
-  $("zone").style.left = pos(lo) + "%"; $("zone").style.width = (pos(hi) - pos(lo)) + "%";
-  $("you").style.left = `calc(${pos(score)}% - 3px)`;
-  $("youLbl").style.left = pos(score) + "%"; $("youLbl").textContent = "You: " + score;
-
-  $("altScore").textContent = score;
-  let pool = Object.entries(MAJORS).filter(([k,x]) => k !== key && x.subs.join() === m.subs.join());
-  let alts = pool.map(([k,x]) => ({k, x, p: prob(score, x)})).filter(a => a.p > 85).sort((a,b) => b.p - a.p).slice(0,3);
-  $("alts").innerHTML = alts.length ? alts.map(a => { const l = level(a.p); return `
-    <article class="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col">
-      <h3 class="text-xl font-extrabold">${a.x.name}</h3>
-      <p class="text-sm text-slate-600 mt-1">${a.x.uni}</p>
-      <div class="mt-4 flex items-center gap-2"><span class="text-3xl font-extrabold">${a.p}%</span>
-        <span class="rounded-full px-3 py-1 text-sm font-bold ${l.badge}">${l.k}</span></div>
-      <p class="text-sm text-slate-600 mt-3">Last cutoff: <b>${a.x.cutoffs[3]}</b> (${score - a.x.cutoffs[3]} points of margin)</p>
-      <button type="button" data-detail="${a.k}" class="mt-auto pt-4"><span class="block w-full rounded-xl border-2 border-indigo-700 text-indigo-800 font-bold py-2 hover:bg-indigo-50">View details</span></button>
-    </article>`; }).join("")
-    : `<p class="sm:col-span-3 bg-white rounded-2xl border border-slate-200 p-5 text-lg">No safer alternatives found for this score. Try editing your score or major.</p>`;
-}
-
-// ---- Screens 4-6 ----
-const EXTRA = { // sample numbers: grants available, tuition without a grant (KZT per year)
-  law:[200,"1.6M"], intl:[45,"1.4M"], soc:[30,"1.0M"], pol:[35,"1.2M"], cust:[25,"0.9M"], med:[220,"2.4M"], cs:[180,"1.5M"], jour:[40,"1.1M"]
-};
-let cur = {score:117, k:null}, hasResults = false, shortlist = [], checks = {};
-const STEPS = [
-  ["Late July","Check that your two profile subjects match each program"],
-  ["Late July","Get your UNT certificate and ID ready"],
-  ["Early August","Choose up to your priority programs on the grant portal"],
-  ["Mid August","Watch for the grant competition results"],
-  ["Late August","Confirm your place and submit enrollment documents"]
-];
-const backToResults = () => hasResults ? show("screen-results") : show("screen-form");
-const upd = () => $("cnt").textContent = shortlist.length;
-
-function openDetail(k){
-  const m = MAJORS[k], p = prob(cur.score, m), L = level(p), e = EXTRA[k]; cur.k = k;
-  $("dBody").innerHTML = `
-    <h2 class="text-3xl font-extrabold">${m.name}</h2>
-    <p class="text-slate-600 mt-1">${m.uni}</p>
-    <div class="mt-5 flex flex-wrap items-center gap-4">
-      <span class="text-5xl font-extrabold">${p}%</span>
-      <span class="rounded-full px-4 py-2 text-lg font-bold ${L.badge}">${L.k} risk</span>
-      <span class="text-slate-600">at ${cur.score} points</span>
-    </div>
-    <dl class="mt-6 grid sm:grid-cols-2 gap-4">
-      <div class="rounded-xl border border-slate-200 p-4"><dt class="text-slate-600">Last grant cutoff</dt><dd class="text-2xl font-extrabold">${m.cutoffs[3]}</dd></div>
-      <div class="rounded-xl border border-slate-200 p-4"><dt class="text-slate-600">Grants available (sample)</dt><dd class="text-2xl font-extrabold">${e[0]}</dd></div>
-      <div class="rounded-xl border border-slate-200 p-4"><dt class="text-slate-600">Profile subjects</dt><dd class="text-lg font-bold">${m.subs.join(" + ")}</dd></div>
-      <div class="rounded-xl border border-slate-200 p-4"><dt class="text-slate-600">Tuition without a grant</dt><dd class="text-2xl font-extrabold">${e[1]} KZT/year</dd></div>
-    </dl>`;
-  $("dAdd").textContent = shortlist.includes(k) ? "Already in shortlist: view list" : "Add to shortlist";
-  show("screen-detail");
-}
-
-function renderList(note){
-  $("lNote").textContent = note || ""; $("lNote").classList.toggle("hidden", !note);
-  $("lNext").classList.toggle("hidden", !shortlist.length);
-  $("lBody").innerHTML = shortlist.length ? shortlist.map((k,i) => {
-    const m = MAJORS[k], p = prob(cur.score, m), L = level(p);
-    return `<article class="bg-white rounded-2xl border border-slate-200 p-5 flex flex-wrap items-center gap-4">
-      <span class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-800 font-extrabold grid place-items-center">${i+1}</span>
-      <div class="flex-1 min-w-[10rem]"><h3 class="text-xl font-extrabold">${m.name}</h3><p class="text-sm text-slate-600">${m.uni}</p></div>
-      <span class="text-2xl font-extrabold">${p}%</span>
-      <span class="rounded-full px-3 py-1 text-sm font-bold ${L.badge}">${L.k}</span>
+  <header class="bg-indigo-800 text-white py-5 px-4">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-white text-indigo-800 font-extrabold text-xl grid place-items-center">G</div>
+        <span class="text-2xl font-extrabold tracking-tight">GrantCheck<span class="text-indigo-300">.kz</span></span>
+      </a>
       <div class="flex gap-2">
-        ${i ? `<button type="button" data-up="${i}" class="rounded-lg border-2 border-slate-300 px-3 py-2 font-bold">Move up</button>` : ""}
-        <button type="button" data-rm="${k}" class="rounded-lg border-2 border-slate-300 px-3 py-2 font-bold text-red-700">Remove</button>
-      </div></article>`; }).join("")
-    : `<p class="bg-white rounded-2xl border border-slate-200 p-5 text-lg">Your shortlist is empty. Open a program from your results and choose Add to shortlist.</p>`;
-}
+        <a href="alerts.html" class="text-sm font-bold border-2 border-indigo-300 rounded-lg px-3 py-2 hover:bg-indigo-700">Как это работает</a>
+        <a href="shortlist.html" class="text-sm font-bold bg-white text-indigo-800 rounded-lg px-3 py-2">
+          Избранное (<span id="shortlist-count">0</span>)
+        </a>
+      </div>
+    </div>
+  </header>
 
-function renderPlan(){
-  $("pSub").textContent = "First priority: " + MAJORS[shortlist[0]].name + (shortlist.length > 1 ? ` (plus ${shortlist.length-1} more)` : "") + ". Dates are samples; confirm them with the Ministry.";
-  $("pList").innerHTML = STEPS.map((s,i) => `<li><label class="flex gap-3 items-start cursor-pointer">
-    <input type="checkbox" data-step="${i}" class="mt-1 w-6 h-6 accent-indigo-700" ${checks[i]?"checked":""}>
-    <span><span class="block font-bold text-lg">${s[1]}</span><span class="text-slate-600">${s[0]}</span></span></label></li>`).join("");
-  planProgress();
-}
-function planProgress(){
-  const n = STEPS.filter((_,i) => checks[i]).length;
-  $("pCount").textContent = n + " of " + STEPS.length + " steps done";
-  $("pBar").style.width = (n / STEPS.length * 100) + "%";
-}
+  <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full">
+    <section class="mb-8">
+      <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight">
+        Высокий балл ЕНТ не гарантирует грант. Проверь свои шансы перед подачей.
+      </h1>
+      <p class="mt-4 text-lg text-slate-700">
+        Абитуриентам тяжело получить грант на популярные специальности из-за неравномерного распределения квот. Высокобальники получают отказы, а некоторые ошибаются с выбором.
+      </p>
+    </section>
 
-document.addEventListener("click", e => {
-  const d = e.target.closest("[data-detail]"); if (d) return openDetail(d.dataset.detail);
-  const up = e.target.closest("[data-up]"); if (up) { const i = +up.dataset.up; [shortlist[i-1], shortlist[i]] = [shortlist[i], shortlist[i-1]]; return renderList(); }
-  const rm = e.target.closest("[data-rm]"); if (rm) { shortlist = shortlist.filter(k => k !== rm.dataset.rm); upd(); return renderList("Removed from your shortlist."); }
-});
-$("pList").addEventListener("change", e => { if (e.target.dataset.step) { checks[e.target.dataset.step] = e.target.checked; planProgress(); } });
-$("dBack").onclick = backToResults; $("lBack").onclick = backToResults;
-$("dAdd").onclick = () => {
-  const k = cur.k;
-  if (shortlist.includes(k)) return (renderList(), show("screen-list"));
-  shortlist.push(k); upd(); renderList("Added " + MAJORS[k].name + " to your shortlist."); show("screen-list");
-};
-$("navList").onclick = () => { renderList(); show("screen-list"); };
-$("lNext").onclick = () => { renderPlan(); show("screen-plan"); };
-$("pBack").onclick = () => { renderList(); show("screen-list"); };
-$("pStart").onclick = () => { shortlist = []; checks = {}; hasResults = false; upd(); show("screen-form"); $("score").focus(); };
+    <!-- Встроенная форма калькулятора -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
+      <h2 class="text-2xl font-extrabold mb-4">Рассчитать вероятность гранта</h2>
+      <form id="calculator-form" class="space-y-6">
+        <div>
+          <label for="major-select" class="block text-lg font-bold mb-2">Желаемая специальность</label>
+          <select id="major-select" class="w-full text-lg border-2 border-slate-300 rounded-xl px-4 py-3 bg-white"></select>
+        </div>
 
-$("goForm").onclick = () => show("screen-form");
-$("logo").onclick = () => show("screen-home");
-$("navArch").onclick = () => show("screen-arch");
-$("archBack").onclick = () => hasResults ? show("screen-results") : show("screen-home");
-$("archGo").onclick = () => show("screen-form");
-$("toAlert").onclick = () => { $("aOk").classList.add("hidden"); show("screen-alert"); };
-$("aBack").onclick = backToResults;
-$("aSave").onclick = () => {
-  const v = $("email").value.trim(), bad = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  $("emailErr").classList.toggle("hidden", !bad);
-  $("email").classList.toggle("border-red-600", bad);
-  if (bad) return;
-  $("aOk").textContent = "Saved. We will email " + v + " when cutoffs or quotas change.";
-  $("aOk").classList.remove("hidden");
-};
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label for="sub1" class="block font-bold mb-1">Профильный предмет 1</label>
+            <select id="sub1" class="w-full text-base border-2 border-slate-300 rounded-xl px-3 py-2 bg-white"></select>
+          </div>
+          <div>
+            <label for="sub2" class="block font-bold mb-1">Профильный предмет 2</label>
+            <select id="sub2" class="w-full text-base border-2 border-slate-300 rounded-xl px-3 py-2 bg-white"></select>
+          </div>
+        </div>
 
-["backTop","backBottom"].forEach(id => $(id).addEventListener("click", () => { show("screen-form"); $("score").focus(); }));
-</script>
+        <div>
+          <label for="score-input" class="block text-lg font-bold mb-2">Общий балл ЕНТ (0–140)</label>
+          <input type="number" id="score-input" min="0" max="140" value="117" placeholder="Например: 117" required class="w-full text-2xl font-bold border-2 border-slate-300 rounded-xl px-4 py-3" />
+          <p id="error-msg" class="text-red-600 font-bold mt-2 hidden"></p>
+        </div>
+
+        <button type="submit" class="btn-primary w-full text-xl font-bold rounded-xl py-4 transition-colors">
+          Оценить шансы (Calculate My Chances)
+        </button>
+      </form>
+    </section>
+
+    <!-- Доказательная база (Evidence) -->
+    <section class="mt-8 space-y-4">
+      <div class="bg-white rounded-2xl border border-slate-200 p-6">
+        <h3 class="text-xl font-extrabold">Доказательство 1: Дисбаланс выделения грантов</h3>
+        <div class="mt-4 space-y-3">
+          <div>
+            <div class="flex justify-between font-bold"><span>Ветеринария</span><span>973</span></div>
+            <div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-3 bg-slate-400 rounded-full" style="width: 100%;"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-bold"><span>Преподаватели физкультуры</span><span>500</span></div>
+            <div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-3 bg-slate-400 rounded-full" style="width: 51%;"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-bold"><span>Право / Юриспруденция</span><span>200</span></div>
+            <div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-3 bg-red-700 rounded-full" style="width: 21%;"></div></div>
+          </div>
+        </div>
+        <p class="mt-3 text-xs text-slate-500">
+          Источник: Официальные таблицы распределения грантов МОН РК <a href="https://testcenter.kz/" target="_blank" class="underline text-indigo-700">[cite: 1, 2]</a>.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-6">
+        <h3 class="text-xl font-extrabold">Доказательство 2: 117 баллов не хватило на «Право»</h3>
+        <p class="mt-2 text-slate-700">
+          Абитуриент с 117 баллами не получил грант на юриспруденцию, в то время как на менее конкурентные специальности проходили с 60–70 баллами. Проходной балл на Право составил <b>126 из 140</b> <a href="https://otyrar.kz/" target="_blank" class="underline text-indigo-700">[cite: 1, 2]</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { fetchMajors, fetchSubjects } from './js/api.js';
+    import './js/app.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const majors = await fetchMajors();
+      const subjects = await fetchSubjects();
+
+      const majorSelect = document.getElementById('major-select');
+      const sub1Select = document.getElementById('sub1');
+      const sub2Select = document.getElementById('sub2');
+
+      // Заполнение предметов
+      subjects.forEach(s => {
+        sub1Select.add(new Option(s, s));
+        sub2Select.add(new Option(s, s));
+      });
+
+      // Заполнение специальностей
+      Object.entries(majors).forEach(([key, m]) => {
+        majorSelect.add(new Option(`${m.name} (${m.code})`, key));
+      });
+
+      function updateSubjectsForMajor() {
+        const m = majors[majorSelect.value];
+        if (m) {
+          sub1Select.value = m.subs[0];
+          sub2Select.value = m.subs[1];
+        }
+      }
+
+      majorSelect.addEventListener('change', updateSubjectsForMajor);
+      updateSubjectsForMajor();
+
+      // Обработка отправки формы
+      document.getElementById('calculator-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const score = document.getElementById('score-input').value;
+        const err = document.getElementById('error-msg');
+
+        if (sub1Select.value === sub2Select.value) {
+          err.textContent = "Выберите два разных профильных предмета.";
+          err.classList.remove('hidden');
+          return;
+        }
+
+        sessionStorage.setItem('grantcheck_query', JSON.stringify({
+          majorKey: majorSelect.value,
+          sub1: sub1Select.value,
+          sub2: sub2Select.value,
+          score: Number(score)
+        }));
+
+        window.location.href = 'results.html';
+      });
+    });
+  </script>
 </body>
 </html>

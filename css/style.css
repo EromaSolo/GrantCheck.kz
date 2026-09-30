@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap');
+
+body {
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.btn-primary {
+  background-color: #4338ca;
+  color: #ffffff;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #3730a3;
+}
+
+.btn-primary:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 3px solid #a5b4fc;
+  outline-offset: 2px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  animation: spin 0.9s linear infinite;
+}
