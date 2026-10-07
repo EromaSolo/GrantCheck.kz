@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — GrantCheck.kz</title><link rel="stylesheet" href="assets/css/styles.css"></head>
+<body><div id="site-header"></div>
+<main><div class="container">
+<h1>About GrantCheck.kz</h1>
+<div class="card"><h2>Why it exists</h2><p>A high UNT score does not guarantee a grant: about 4–5 people compete for each IT place, and every university sets its own minimum threshold. GrantCheck.kz shows applicants with Mathematics and Informatics their 2026 grant chances by university and suggests a field where the chances are better.</p></div>
+<div class="card"><h2>How the site works</h2><ol><li>You choose a field and enter your UNT score.</li><li>The site compares your score with each university program&rsquo;s threshold and accounts for competition in the field.</li><li>You get a chance for every university, a safer field suggestion, and a shortlist for your application (up to 4 programs).</li></ol></div>
+<div class="card"><h2>How the percentages are calculated</h2><ul>
+<li><b>University threshold.</b> The minimum score a university set for 2026. Below it, the chance is 1%: you cannot enter the competition.</li>
+<li><b>Required margin.</b> The real grant score sits above the threshold. The more applicants per place, the bigger the margin: (applicants per place − 1) × <span id="k-margin"></span> points.</li>
+<li><b>Chance.</b> We compare your margin above the threshold with the required margin. If they are equal, the chance is 50%. Each ±<span id="k-spread"></span> points around that moves the chance along an S-shaped curve (a sigmoid). The result is limited to 1–99%.</li>
+<li><b>Risk level.</b> 75% and above is low risk, 40–74% is medium, below 40% is high.</li>
+<li><b>Safer field.</b> For each field we take the best university for your score and suggest the field with the highest chance. If even that is below 75%, the site tells you how many points are missing.</li></ul>
+<p class="muted small">Example: threshold 110, 4 applicants per place → required margin 1.5. With 110 points the chance is about 38%; with 113 about 62%; with 116 about 82%. The model was calibrated on real cases: at AITU Cybersecurity (threshold 93), applicants with 93 and 99 points received grants.</p></div>
+<div class="card"><h2>Data and limits</h2><p>We use only 2026 university thresholds (KBTU, SDU, AITU, ENU, KazNU, Satbayev, Narxoz) and competition for fields B057, B058, B157/B054 and B011. The result is an estimate, not an official forecast. Check the current rules before you apply.</p></div>
+<div class="card"><h2>Developers</h2><p class="muted">Questions, mistakes in the data, or a case for calibrating the model? Message us on Telegram.</p><ul><li><b>Yerasyl</b> — <a href="https://t.me/erasyl_exe" target="_blank" rel="noopener">@erasyl_exe</a></li><li><b>Arsen</b> — <a href="https://t.me/arsenndos" target="_blank" rel="noopener">@arsenndos</a></li><li><b>Ykylas</b> — <a href="https://t.me/Uqylas" target="_blank" rel="noopener">@Uqylas</a></li></ul></div>
+<p><a href="alerts.html">News signup and project architecture</a></p>
+</div></main>
+<div id="site-footer"></div>
+<script src="assets/js/data.js"></script><script src="assets/js/model.js"></script><script src="assets/js/storage.js"></script><script src="assets/js/layout.js"></script>
+<script src="assets/js/pages/about.js"></script>
+</body></html>
